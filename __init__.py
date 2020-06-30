@@ -50,11 +50,10 @@ class LUT_PT_tools(bpy.types.Panel):
         # col.prop(context.scene, "image_output_directory", text="")
         # col.prop(context.scene, "image_output_name", text="")
         
-        layout.label(text="select image:")
-        layout.prop(scene, "image_list_enum", text="")
-
-        col.prop(scene, "temp_image_pass", text="")
-        col.operator("lut.apply_lut", text="apply")
+        col.label(text="select image:")
+        col.prop(scene, "image_list_enum", text="")
+        col.separator()
+        col.operator("lut.apply_lut", text="apply LUT", icon="OUTLINER_OB_IMAGE")
 
 
 
