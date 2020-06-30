@@ -37,19 +37,23 @@ class LUT_PT_tools(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        scene = context.scene
         col = layout.column(align=True)
 
         col.label(text="import lut")
         col.operator("luts.open_import_filebrowser", text="set_import_lut_directory")
-        col.prop(context.scene, "lut_import_directory", text="")
-        col.prop(context.scene, "lut_import_name", text="")
+        col.prop(scene, "lut_import_directory", text="")
+        col.prop(scene, "lut_import_name", text="")
 
-        col.label(text="output image pass")
-        col.operator("luts.open_output_filebrowser", text="set_output_image_directory")
-        col.prop(context.scene, "image_output_directory", text="")
-        col.prop(context.scene, "image_output_name", text="")
+        # col.label(text="output image pass")
+        # col.operator("luts.open_output_filebrowser", text="set_output_image_directory")
+        # col.prop(context.scene, "image_output_directory", text="")
+        # col.prop(context.scene, "image_output_name", text="")
+        
+        layout.label(text="select image:")
+        layout.prop(scene, "image_list_enum", text="")
 
-        col.prop(context.scene, "temp_image_pass", text="")
+        col.prop(scene, "temp_image_pass", text="")
         col.operator("lut.apply_lut", text="apply")
 
 
@@ -82,11 +86,30 @@ class LUT_OT_open_output_filebrowser(bpy.types.Operator, ImportHelper):
         context.scene["image_output_pass"] = context.scene["image_output_directory"] + context.scene["image_output_name"]
         return {'FINISHED'}
 
+# update enum property
+def get_object_list_callback(scene, context):
+    items = []
+    images = bpy.data.images
+    for img in images:
+        img_name = img.name
+        items.append((img_name, img_name, ""))
+    return items
+# apply new enum property
+def init_props():
+    scene = bpy.types.Scene
+    scene.image_list_enum = EnumProperty(
+    name="image list",
+    description="image list",
+    items=get_object_list_callback
+    )
+
+
 # クラスの登録
 def register():
     for cls in classes:
         print("Register : " + str(cls))
         bpy.utils.register_class(cls)
+    init_props()
 
 # クラスの登録解除
 def unregister():
