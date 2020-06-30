@@ -104,21 +104,17 @@ def init_props():
     )
 
 
-# クラスの登録
 def register():
     for cls in classes:
         print("Register : " + str(cls))
         bpy.utils.register_class(cls)
     init_props()
 
-# クラスの登録解除
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
-# 登録するクラス
 classes = [
-    # export_gif.GIF_OT_ExportOperator,
     apply_lut_image.LUT_OT_ExportOperator,
     LUT_PT_tools,
     LUT_OT_open_import_filebrowser,
@@ -127,5 +123,3 @@ classes = [
 
 if __name__ == '__main__':
     register()
-
-
