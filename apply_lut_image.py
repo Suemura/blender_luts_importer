@@ -57,12 +57,15 @@ class LUT_OT_ExportOperator(bpy.types.Operator):
 
         write_image(luminance_map_img, temp_pass, bit_depth='uint8')
         new_image = bpy.data.images.load(temp_pass, check_existing=True)
+        new_image.reload()
 
     def execute(self, context):
         print("test : lut_execute")
         temp_dir = os.path.dirname(os.path.abspath(__file__))
         temp_image = temp_dir + "\\img.tiff"
         temp_pass = temp_dir + "\\temp.tiff"
+        if os.path.isfile(temp_image):
+            os.remove(temp_image)
 
         select_image_name = context.scene.image_list_enum
         img = bpy.data.images[select_image_name]
@@ -76,5 +79,6 @@ class LUT_OT_ExportOperator(bpy.types.Operator):
         self.apply_lut(context, temp_image, temp_pass)
 
         self.undo_image_and_render_setting(context, img, original_setting)
+        os.remove(temp_image)
 
         return {"FINISHED"}
