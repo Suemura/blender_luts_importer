@@ -1,6 +1,7 @@
 # blender_luts_importer
 import&amp;apply luts to images!  
-レンダリング画像に対してLUT(Look Up Table)を適用し、カラーグレーディングを行うアドオンです。  
+レンダリング画像に対してLUT(Look Up Table)を適用し、カラーグレーディングを行うアドオンです。 
+<img width="1920" alt="サムネイル.png (1.4 MB)" src="https://img.esa.io/uploads/production/attachments/9489/2020/07/07/78640/28cf081a-087f-470f-861d-10023ca0cfb8.png">
 
 # Attention
 私はカラーコレクション等の技術者でなく、色情報の専門的知識は有りません。  
