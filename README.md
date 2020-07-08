@@ -21,3 +21,7 @@ Photoshopによる結果の比較などを行った限り、大きな違いは�
 UV/ImageエディタのLUTタブで操作を行う  
 Lutファイル(*.Cube)を設定する  
 あとはApplyを押すことで、"img.tiff"がBlenderのImageにLut適用済みの画像として追加される  
+
+### Video
+Youtube link :   
+[![](http://img.youtube.com/vi/Re1R3VgedjI/0.jpg)](http://www.youtube.com/watch?v=Re1R3VgedjI "")
