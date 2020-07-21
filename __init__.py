@@ -19,6 +19,50 @@ from . import apply_lut_image
 from bpy.props import *
 from bpy_extras.io_utils import ImportHelper
 
+class LUT_OT_InstallColuur(bpy.types.Operator):
+    bl_idname = "lut.install_colour"
+    bl_label = "apply lut"
+    bl_options = {"REGISTER", "UNDO"}
+    mode = StringProperty()
+
+    def check_installed_package(self, context, python_dir):
+        # get installed package
+        packages_message = subprocess.check_output(".\python.exe -m pip freeze", shell=True)
+        package_message_list = packages_message.decode().split("\n")
+        package_list = []
+        for p in package_message_list:
+            package_name = p.replace("\r", "")
+            package_name = package_name.split("==")[0]
+            package_list.append(package_name)
+        print(package_list)
+
+        if "colour-science" in package_list:
+            context.scene["colour_science_status"] = "Installed!"
+            return True
+        else:
+            context.scene["colour_science_status"] = "Not Installed."
+            return False
+
+    def execute(self, context):
+        # python.exeのパスを取得
+        blender_version = str(bpy.app.version_string)[:4]
+        blender_pass = str(sys.executable)
+        python_dir = os.path.dirname(blender_pass) +"\\"+blender_version+ "\\python\\bin\\"
+        python_pass = python_dir + "python.exe"
+        os.chdir(python_dir)
+        pip_install_command = ".\python.exe -m pip install colour-science"
+        pip_uninstall_command = ".\python.exe -m pip uninstall colour-science"
+
+        installed = False
+        if self.mode == "CHECK":
+            installed = self.check_installed_package(context, python_dir)
+        elif self.mode == "INSTALL":
+            subprocess.call(pip_install_command, shell=True)
+        elif self.mode == "UNINSTALL":
+            subprocess.call(pip_uninstall_command, shell=True)
+            
+        return {"FINISHED"}
+
 class LUT_PT_preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
     def draw(self, context):
