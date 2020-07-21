@@ -60,7 +60,6 @@ class LUT_OT_InstallColuur(bpy.types.Operator):
             subprocess.call(pip_install_command, shell=True)
         elif self.mode == "UNINSTALL":
             subprocess.call(pip_uninstall_command, shell=True)
-            
         return {"FINISHED"}
 
 class LUT_PT_preferences(bpy.types.AddonPreferences):
@@ -136,8 +135,6 @@ def init_props():
     description="image list",
     items=get_object_list_callback
     )
-
-        
 
 def register():
     for cls in classes:
