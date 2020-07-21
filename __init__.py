@@ -4,10 +4,10 @@ bl_info = {
     "description": "import&apply 3Dlut",
     "author": "Suemura",
     "version": (0, 0, 1, 0),
-    "blender": (2, 83, 0),
+    "blender": (2, 82, 0),
     "support": "TESTING",
     "category": "Render",
-    "location": "UV/Image Editor and View Layers",
+    "location": "UV/Image Editor",
     "warning": "",
     "wiki_url": "",
     "tracker_url": ""
@@ -19,13 +19,19 @@ from . import apply_lut_image
 from bpy.props import *
 from bpy_extras.io_utils import ImportHelper
 
+class LUT_PT_preferences(bpy.types.AddonPreferences):
+    bl_idname = __package__
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text='check libraly:')
+
 class LUT_PT_tools(bpy.types.Panel):
     bl_label = "Lut_panel"
     bl_space_type = 'IMAGE_EDITOR'
     bl_region_type = 'UI'
     bl_category = "Luts"
 
-    # properties    
+    # properties
     bpy.types.Scene.lut_import_pass = bpy.props.StringProperty(name = "",)
     bpy.types.Scene.lut_import_directory = bpy.props.StringProperty(name = "",)
     bpy.types.Scene.lut_import_name = bpy.props.StringProperty(name = "",)
@@ -33,7 +39,6 @@ class LUT_PT_tools(bpy.types.Panel):
     bpy.types.Scene.image_output_name = bpy.props.StringProperty(name = "",)
     bpy.types.Scene.image_output_pass = bpy.props.StringProperty(name = "",)
     bpy.types.Scene.temp_image_pass = bpy.props.StringProperty(name = "",)
-
 
     def draw(self, context):
         layout = self.layout
@@ -45,17 +50,10 @@ class LUT_PT_tools(bpy.types.Panel):
         col.prop(scene, "lut_import_directory", text="")
         col.prop(scene, "lut_import_name", text="")
 
-        # col.label(text="output image pass")
-        # col.operator("luts.open_output_filebrowser", text="set_output_image_directory")
-        # col.prop(context.scene, "image_output_directory", text="")
-        # col.prop(context.scene, "image_output_name", text="")
-        
         col.label(text="select image:")
         col.prop(scene, "image_list_enum", text="")
         col.separator()
         col.operator("lut.apply_lut", text="apply LUT", icon="OUTLINER_OB_IMAGE")
-
-
 
 class LUT_OT_open_import_filebrowser(bpy.types.Operator, ImportHelper):
     bl_idname = "luts.open_import_filebrowser"
@@ -68,21 +66,6 @@ class LUT_OT_open_import_filebrowser(bpy.types.Operator, ImportHelper):
         context.scene["lut_import_directory"] = path_pair[0] + "\\"
         context.scene["lut_import_name"] = path_pair[1]
         context.scene["lut_import_pass"] = context.scene["lut_import_directory"] + context.scene["lut_import_name"]
-        return {'FINISHED'}
-
-class LUT_OT_open_output_filebrowser(bpy.types.Operator, ImportHelper):
-    bl_idname = "luts.open_output_filebrowser"
-    bl_label = "Set output path"
-    filter_glob = StringProperty( default="*", options={'HIDDEN'} )
-
-    def execute(self, context):
-        filename, extension = os.path.splitext(self.filepath)
-        path_pair = os.path.split(self.filepath)
-        context.scene["image_output_directory"] = path_pair[0] + "\\"
-        context.scene["image_output_name"] = path_pair[1]
-        if context.scene["image_output_name"] == "":
-            context.scene["image_output_name"] = "out.png"
-        context.scene["image_output_pass"] = context.scene["image_output_directory"] + context.scene["image_output_name"]
         return {'FINISHED'}
 
 # update enum property
@@ -105,9 +88,10 @@ def init_props():
 def check_installed_package():
     # python.exeのパスを取得
     blender_version = str(bpy.app.version_string)[:4]
-    python_pass = str(sys.executable)
-    python_pass = os.path.dirname(python_pass) +"\\"+blender_version+ "\\python\\bin\\"
-    os.chdir(python_pass)
+    blender_pass = str(sys.executable)
+    python_dir = os.path.dirname(blender_pass) +"\\"+blender_version+ "\\python\\bin\\"
+    python_pass = python_dir + "python.exe"
+    os.chdir(python_dir)
     pip_command = ".\python.exe -m pip install colour"
 
     # get installed package
@@ -120,12 +104,10 @@ def check_installed_package():
         package_list.append(package_name)
 
     if "colour" in package_list:
-        print("Installed!")
+        return True
     else:
+        return False
         returncode = subprocess.call(pip_command)
-
-def install_pillo
-
 
 def register():
     for cls in classes:
@@ -140,8 +122,8 @@ def unregister():
 classes = [
     apply_lut_image.LUT_OT_ExportOperator,
     LUT_PT_tools,
-    LUT_OT_open_import_filebrowser,
-    LUT_OT_open_output_filebrowser
+    LUT_PT_preferences,
+    LUT_OT_open_import_filebrowser
 ]
 
 if __name__ == '__main__':
