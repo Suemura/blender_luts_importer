@@ -2,10 +2,10 @@
 bl_info = {
     "name": "3Dlut_addon",
     "description": "import&apply 3Dlut",
-    "author": "Suemura",
-    "version": (0, 0, 1, 1),
+    "author": "Masato Suemura",
+    "version": (1, 0, 0),
     "blender": (2, 82, 0),
-    "support": "TESTING",
+    "support": "COMMUNITY",
     "category": "Render",
     "location": "UV/Image Editor",
     "warning": "",
