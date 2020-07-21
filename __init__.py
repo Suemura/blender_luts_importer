@@ -65,9 +65,17 @@ class LUT_OT_InstallColuur(bpy.types.Operator):
 
 class LUT_PT_preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
+    bpy.types.Scene.colour_science_status = bpy.props.StringProperty(name = "", default="Please Check.")
     def draw(self, context):
+        scene = context.scene
         layout = self.layout
-        layout.label(text='check libraly:')
+        layout.label(text="initial settings : ")
+        row = layout.row(align=True)
+        row.operator("lut.install_colour", text="check").mode = "CHECK"
+        row.prop(scene, "colour_science_status", text="")
+        layout.operator("lut.install_colour", text="install colour-science package").mode = "INSTALL"
+        layout.label(text="If you want to uninstall the library, please show the console", icon="ERROR")
+        layout.operator("lut.install_colour", text="uninstall colour-science package").mode = "UNINSTALL"
 
 class LUT_PT_tools(bpy.types.Panel):
     bl_label = "Lut_panel"
@@ -129,6 +137,7 @@ def init_props():
     items=get_object_list_callback
     )
 
+        
 
 def register():
     for cls in classes:
@@ -144,7 +153,8 @@ classes = [
     apply_lut_image.LUT_OT_ExportOperator,
     LUT_PT_tools,
     LUT_PT_preferences,
-    LUT_OT_open_import_filebrowser
+    LUT_OT_open_import_filebrowser,
+    LUT_OT_InstallColuur
 ]
 
 if __name__ == '__main__':
