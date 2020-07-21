@@ -3,7 +3,7 @@ bl_info = {
     "name": "3Dlut_addon",
     "description": "import&apply 3Dlut",
     "author": "Suemura",
-    "version": (0, 0, 1, 0),
+    "version": (0, 0, 1, 1),
     "blender": (2, 82, 0),
     "support": "TESTING",
     "category": "Render",
@@ -80,7 +80,7 @@ class LUT_PT_preferences(bpy.types.AddonPreferences):
 class LUT_PT_tools(bpy.types.Panel):
     bl_label = "Lut_panel"
     bl_space_type = 'IMAGE_EDITOR'
-    bl_region_type = 'UI'
+    bl_region_type = "UI"
     bl_category = "Luts"
 
     # properties
