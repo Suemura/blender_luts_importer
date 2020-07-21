@@ -14,7 +14,7 @@ bl_info = {
 }
 
 import bpy
-import os, os.path
+import os, os.path, sys, subprocess
 from . import apply_lut_image
 from bpy.props import *
 from bpy_extras.io_utils import ImportHelper
@@ -101,6 +101,30 @@ def init_props():
     description="image list",
     items=get_object_list_callback
     )
+
+def check_installed_package():
+    # python.exeのパスを取得
+    blender_version = str(bpy.app.version_string)[:4]
+    python_pass = str(sys.executable)
+    python_pass = os.path.dirname(python_pass) +"\\"+blender_version+ "\\python\\bin\\"
+    os.chdir(python_pass)
+    pip_command = ".\python.exe -m pip install colour"
+
+    # get installed package
+    packages_message = subprocess.check_output(".\python.exe -m pip freeze", shell=True)
+    package_message_list = packages_message.decode().split("\n")
+    package_list = []
+    for p in package_message_list:
+        package_name = p.replace("\r", "")
+        package_name = package_name.split("==")[0]
+        package_list.append(package_name)
+
+    if "colour" in package_list:
+        print("Installed!")
+    else:
+        returncode = subprocess.call(pip_command)
+
+def install_pillo
 
 
 def register():
