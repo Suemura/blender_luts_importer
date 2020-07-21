@@ -1,6 +1,4 @@
-import bpy, os, shutil
-from colour import read_LUT
-from colour import write_image, read_image
+import bpy, os, shutil, pathlib
 
 class LUT_OT_ExportOperator(bpy.types.Operator):
     bl_idname = "lut.apply_lut"
@@ -9,7 +7,9 @@ class LUT_OT_ExportOperator(bpy.types.Operator):
 
     def copy_current_image(self, context, temp_image):
         select_image = bpy.data.images[context.scene.image_list_enum]
-        original_path = select_image.filepath
+        original_path = pathlib.Path(select_image.filepath)
+        original_path = str(original_path.resolve())
+        print("original_path : " + original_path)
         shutil.copyfile(original_path, temp_image)
 
     def save_image_and_render_setting(self, context, img):
@@ -52,6 +52,8 @@ class LUT_OT_ExportOperator(bpy.types.Operator):
         context.scene["temp_image_pass"] = temp_image
 
     def apply_lut(self, context, temp_image, temp_pass):
+        from colour import read_LUT
+        from colour import write_image, read_image
         lut3d = read_LUT(context.scene["lut_import_pass"])
         luminance_map_img = lut3d.apply(read_image(temp_image))
 
