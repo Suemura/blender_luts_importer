@@ -129,29 +129,6 @@ def init_props():
     items=get_object_list_callback
     )
 
-def check_installed_package():
-    # python.exeのパスを取得
-    blender_version = str(bpy.app.version_string)[:4]
-    blender_pass = str(sys.executable)
-    python_dir = os.path.dirname(blender_pass) +"\\"+blender_version+ "\\python\\bin\\"
-    python_pass = python_dir + "python.exe"
-    os.chdir(python_dir)
-    pip_command = ".\python.exe -m pip install colour"
-
-    # get installed package
-    packages_message = subprocess.check_output(".\python.exe -m pip freeze", shell=True)
-    package_message_list = packages_message.decode().split("\n")
-    package_list = []
-    for p in package_message_list:
-        package_name = p.replace("\r", "")
-        package_name = package_name.split("==")[0]
-        package_list.append(package_name)
-
-    if "colour" in package_list:
-        return True
-    else:
-        return False
-        returncode = subprocess.call(pip_command)
 
 def register():
     for cls in classes:
