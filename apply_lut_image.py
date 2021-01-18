@@ -1,4 +1,4 @@
-import bpy, os, shutil, pathlib
+import bpy, os, sys, shutil, pathlib
 
 class LUT_OT_ExportOperator(bpy.types.Operator):
     bl_idname = "lut.apply_lut"
@@ -52,6 +52,10 @@ class LUT_OT_ExportOperator(bpy.types.Operator):
         context.scene["temp_image_pass"] = temp_image
 
     def apply_lut(self, context, temp_image, temp_pass):
+        # パスを追加
+        path_roaming = os.getenv('APPDATA') + "\\Python"
+        for ver in os.listdir(path_roaming):
+            sys.path.append(path_roaming + "\\" + ver + "\\site-packages\\")
         from colour import read_LUT
         from colour import write_image, read_image
         lut3d = read_LUT(context.scene["lut_import_pass"])

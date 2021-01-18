@@ -3,8 +3,8 @@ bl_info = {
     "name": "3Dlut_addon",
     "description": "import&apply 3Dlut",
     "author": "Masato Suemura",
-    "version": (1, 0, 0),
-    "blender": (2, 82, 0),
+    "version": (1, 1, 0),
+    "blender": (2, 92, 0),
     "support": "COMMUNITY",
     "category": "Render",
     "location": "UV/Image Editor",
@@ -44,14 +44,18 @@ class LUT_OT_InstallColuur(bpy.types.Operator):
             return False
 
     def execute(self, context):
+        # パスを追加
+        path_roaming = os.getenv('APPDATA') + "\\Python"
+        for ver in os.listdir(path_roaming):
+            sys.path.append(path_roaming + "\\" + ver + "\\site-packages\\")
         # python.exeのパスを取得
         blender_version = str(bpy.app.version_string)[:4]
         blender_pass = str(sys.executable)
-        python_dir = os.path.dirname(blender_pass) +"\\"+blender_version+ "\\python\\bin\\"
-        python_pass = python_dir + "python.exe"
+        python_dir = os.path.dirname(blender_pass)# +"\\"+blender_version+ "\\python\\bin\\"
+        python_path = python_dir + "python.exe"
         os.chdir(python_dir)
-        pip_install_command = ".\python.exe -m pip install colour-science"
-        pip_uninstall_command = ".\python.exe -m pip uninstall colour-science"
+        pip_install_command = ".\python.exe -m pip install colour-science --user"
+        pip_uninstall_command = ".\python.exe -m pip uninstall colour-science --user"
 
         installed = False
         if self.mode == "CHECK":
