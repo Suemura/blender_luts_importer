@@ -14,7 +14,7 @@ bl_info = {
 }
 
 import bpy
-import os, os.path, sys, subprocess
+import os, os.path, sys, ensurepip, subprocess
 from . import apply_lut_image
 from bpy.props import *
 from bpy_extras.io_utils import ImportHelper
@@ -27,7 +27,7 @@ class LUT_OT_InstallColuur(bpy.types.Operator):
 
     def check_installed_package(self, context, python_dir):
         # get installed package
-        packages_message = subprocess.check_output(".\python.exe -m pip freeze", shell=True)
+        packages_message = subprocess.check_output([pybin, "-m", "pip", "freeze"])
         package_message_list = packages_message.decode().split("\n")
         package_list = []
         for p in package_message_list:
@@ -45,25 +45,25 @@ class LUT_OT_InstallColuur(bpy.types.Operator):
 
     def execute(self, context):
         # パスを追加
-        path_roaming = os.getenv('APPDATA') + "\\Python"
-        for ver in os.listdir(path_roaming):
-            sys.path.append(path_roaming + "\\" + ver + "\\site-packages\\")
-        # python.exeのパスを取得
-        blender_version = str(bpy.app.version_string)[:4]
-        blender_pass = str(sys.executable)
-        python_dir = os.path.dirname(blender_pass)# +"\\"+blender_version+ "\\python\\bin\\"
-        python_path = python_dir + "python.exe"
-        os.chdir(python_dir)
-        pip_install_command = ".\python.exe -m pip install colour-science --user"
-        pip_uninstall_command = ".\python.exe -m pip uninstall colour-science --user"
+        ensurepip.bootstrap()
+        os.environ.pop("PIP_REQ_TRACKER", None)
+        pybin = bpy.app.binary_path_python
 
         installed = False
         if self.mode == "CHECK":
-            installed = self.check_installed_package(context, python_dir)
+            installed = self.check_installed_package(context, pybin)
         elif self.mode == "INSTALL":
-            subprocess.call(pip_install_command, shell=True)
+            try:
+                output = subprocess.check_call([pybin, "-m", "pip", "install", "colour-science"])
+                print(output)
+            except subprocess.CalledProcessError as e:
+                print(e.output)
         elif self.mode == "UNINSTALL":
-            subprocess.call(pip_uninstall_command, shell=True)
+            try:
+                output = subprocess.check_call([pybin, "-m", "pip", "uninstall", "colour-science"])
+                print(output)
+            except subprocess.CalledProcessError as e:
+                print(e.output)
         return {"FINISHED"}
 
 class LUT_PT_preferences(bpy.types.AddonPreferences):
